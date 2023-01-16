@@ -71,6 +71,12 @@ namespace WPF_ServerTcp.ViewModels
                         App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
                         {
                             clientItem = new ClientItem { Client = client, Name = name };
+                            if(OfflineTcpClients.Any(c=>c.Name==clientItem.Name))
+                            {
+                                var cI = OfflineTcpClients.First(c => c.Name == clientItem.Name);
+                                OfflineTcpClients.Remove(cI);
+
+                            }
                             TcpClients.Add(clientItem);
                         });
                     }
