@@ -9,13 +9,48 @@
     <Grid>
         <StackPanel>
             <StackPanel Margin="5,10,0,0" VerticalAlignment="Center" HorizontalAlignment="Left">
-                <TextBlock Text="List of Users" FontSize="30" FontWeight="DemiBold">
+                <TextBlock Text="Online Users" FontSize="30" FontWeight="DemiBold">
 
                 </TextBlock>
             </StackPanel>
-            <ListBox Margin="0,10,0,0" ItemsSource="{Binding TcpClients}">
-                
-            </ListBox>
+
+            <StackPanel>
+
+                <ListBox Name="listBox" FontSize="25" ItemsSource="{Binding TcpClients}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Margin="5" Width="400"
+                                              Foreground="Green" Text="{Binding Name}" ></TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <TextBlock Margin="5,10,0,0" Text="Offline Users" FontSize="30" FontWeight="DemiBold">
+
+                </TextBlock>
+                <ListBox FontSize="25" ItemsSource="{Binding OfflineTcpClients}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Margin="5" Width="400" Text="{Binding Name}" Foreground="Red" ></TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+
         </StackPanel>
     </Grid>
 </Window>

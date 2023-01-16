@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using WPF_ServerTcp.Models;
 using WPF_ServerTcp.Services;
 
 namespace WPF_ServerTcp.ViewModels
@@ -15,12 +17,21 @@ namespace WPF_ServerTcp.ViewModels
     public class MainViewModel : BaseViewModel
     {
 
-        private ObservableCollection<TcpClient> tcpClients;
+        private ObservableCollection<ClientItem> tcpClients;
 
-        public ObservableCollection<TcpClient> TcpClients
+        public ObservableCollection<ClientItem> TcpClients
         {
             get { return tcpClients; }
             set { tcpClients = value; OnPropertyChanged(); }
+        }
+
+
+        private ObservableCollection<ClientItem> offlineTcpClients;
+
+        public ObservableCollection<ClientItem> OfflineTcpClients
+        {
+            get { return offlineTcpClients; }
+            set { offlineTcpClients = value; OnPropertyChanged(); }
         }
 
 
@@ -30,28 +41,64 @@ namespace WPF_ServerTcp.ViewModels
 
 
         DispatcherTimer acceptDispatcher;
-        public async void AcceptClients()
-        {
-            await Task.Run(() =>
-            {
-                var client = TcpListener.AcceptTcpClient();
 
-                App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+        DispatcherTimer checkDispatcher;
+
+        public BinaryReader BinaryReader { get; set; }
+
+        public BinaryWriter BinaryWriter { get; set; }
+
+
+
+
+
+        public async void GetClients()
+        {
+            await Task.Run(async () =>
+            {
+                var client = await TcpListener.AcceptTcpClientAsync();
+                var clientItem = new ClientItem();
+                while (true)
                 {
-                    TcpClients.Add(client);
-                });
-             
+
+                    var stream = client.GetStream();
+                    string name;
+
+                    try
+                    {
+                        BinaryReader = new BinaryReader(stream);
+                        name = BinaryReader.ReadString();
+                        App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                        {
+                            clientItem = new ClientItem { Client = client, Name = name };
+                            TcpClients.Add(clientItem);
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"{clientItem.Name} disconnected");
+                        break;
+                    }
+
+                }
+
             });
         }
         public MainViewModel()
         {
-            acceptDispatcher = new DispatcherTimer();
-            acceptDispatcher.Interval = TimeSpan.FromSeconds(1);
-            acceptDispatcher.Tick += AcceptDispatcher_Tick;
-            acceptDispatcher.Start();
+            //acceptDispatcher = new DispatcherTimer();
+            //acceptDispatcher.Interval = TimeSpan.FromSeconds(1);
+            //acceptDispatcher.Tick += AcceptDispatcher_Tick;
+            //acceptDispatcher.Start();
 
 
-            TcpClients = new ObservableCollection<TcpClient>();
+            checkDispatcher = new DispatcherTimer();
+            checkDispatcher.Interval = TimeSpan.FromSeconds(1);
+            checkDispatcher.Tick += CheckDispatcher_Tick;
+            checkDispatcher.Start();
+
+            OfflineTcpClients = new ObservableCollection<ClientItem>();
+            TcpClients = new ObservableCollection<ClientItem>();
 
             var port = 27001;
             var ip = IPAddress.Parse(IPService.GetLocalIPAddress());
@@ -61,12 +108,30 @@ namespace WPF_ServerTcp.ViewModels
             TcpListener.Start();
             MessageBox.Show($"Listening on {TcpListener.LocalEndpoint}");
 
+            GetClients();
 
         }
 
-        private void AcceptDispatcher_Tick(object sender, EventArgs e)
+
+
+        private void CheckDispatcher_Tick(object sender, EventArgs e)
         {
-            AcceptClients();
+            GetClients();
+            for (int i = 0; i < TcpClients.Count; i++)
+            {
+                var item = TcpClients[i];
+                if (!item.Client.Connected)
+                {
+                    TcpClients.Remove(item);
+                    OfflineTcpClients.Add(item);
+                }
+                else
+                {
+                    if (OfflineTcpClients != null)
+                        if (OfflineTcpClients.Count != 0)
+                            OfflineTcpClients.Remove(item);
+                }
+            }
         }
     }
 }
