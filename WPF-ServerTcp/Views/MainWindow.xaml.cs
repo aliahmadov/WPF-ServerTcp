@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WPF_ServerTcp.ViewModels;
 
 namespace WPF_ServerTcp
 {
@@ -23,6 +24,8 @@ namespace WPF_ServerTcp
         public MainWindow()
         {
             InitializeComponent();
+            var viewModel = new MainViewModel();
+            this.DataContext = viewModel;
         }
     }
 }

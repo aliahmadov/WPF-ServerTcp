@@ -1,0 +1,16 @@
+C:\Users\eliah\Source\Repos\WPF-ServerTcp\WPF-ServerTcp\bin\Debug\WPF-ServerTcp.exe.config
+C:\Users\eliah\Source\Repos\WPF-ServerTcp\WPF-ServerTcp\bin\Debug\WPF-ServerTcp.exe
+C:\Users\eliah\Source\Repos\WPF-ServerTcp\WPF-ServerTcp\bin\Debug\WPF-ServerTcp.pdb
+C:\Users\eliah\Source\Repos\WPF-ServerTcp\WPF-ServerTcp\obj\Debug\WPF-ServerTcp.csproj.AssemblyReference.cache
+C:\Users\eliah\Source\Repos\WPF-ServerTcp\WPF-ServerTcp\obj\Debug\WPF-ServerTcp.csproj.SuggestedBindingRedirects.cache
+C:\Users\eliah\Source\Repos\WPF-ServerTcp\WPF-ServerTcp\obj\Debug\Views\MainWindow.g.cs
+C:\Users\eliah\Source\Repos\WPF-ServerTcp\WPF-ServerTcp\obj\Debug\App.g.cs
+C:\Users\eliah\Source\Repos\WPF-ServerTcp\WPF-ServerTcp\obj\Debug\WPF-ServerTcp_MarkupCompile.cache
+C:\Users\eliah\Source\Repos\WPF-ServerTcp\WPF-ServerTcp\obj\Debug\WPF-ServerTcp_MarkupCompile.lref
+C:\Users\eliah\Source\Repos\WPF-ServerTcp\WPF-ServerTcp\obj\Debug\Views\MainWindow.baml
+C:\Users\eliah\Source\Repos\WPF-ServerTcp\WPF-ServerTcp\obj\Debug\WPF-ServerTcp.g.resources
+C:\Users\eliah\Source\Repos\WPF-ServerTcp\WPF-ServerTcp\obj\Debug\WPF_ServerTcp.Properties.Resources.resources
+C:\Users\eliah\Source\Repos\WPF-ServerTcp\WPF-ServerTcp\obj\Debug\WPF-ServerTcp.csproj.GenerateResource.cache
+C:\Users\eliah\Source\Repos\WPF-ServerTcp\WPF-ServerTcp\obj\Debug\WPF-ServerTcp.csproj.CoreCompileInputs.cache
+C:\Users\eliah\Source\Repos\WPF-ServerTcp\WPF-ServerTcp\obj\Debug\WPF-ServerTcp.exe
+C:\Users\eliah\Source\Repos\WPF-ServerTcp\WPF-ServerTcp\obj\Debug\WPF-ServerTcp.pdb
