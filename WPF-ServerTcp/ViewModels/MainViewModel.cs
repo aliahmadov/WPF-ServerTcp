@@ -126,9 +126,9 @@ namespace WPF_ServerTcp.ViewModels
                 var view = new MessageWindow();
                 var viewModel = new MessageWindowViewModel();
                 viewModel.ClientName = SelectedClient.Name;
-                view = viewModel.MyMessageWindow;
+                viewModel.ClientItem = SelectedClient;
+                viewModel.MessagePanel = view.messagePanel;
                 view.DataContext = viewModel;
-
                 view.ShowDialog();
 
 

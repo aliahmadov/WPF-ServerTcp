@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_ServerTcp.Views"
         mc:Ignorable="d"
-        Title="MessageWindow" Height="450" Width="500" AllowsTransparency="True"
-        WindowStyle="None" WindowStartupLocation="CenterScreen" Background="Transparent" MaxWidth="800"
+        Title="MessageWindow" Height="450" Width="500"
+       WindowStartupLocation="CenterScreen" Background="Transparent" MaxWidth="800"
         MaxHeight="500">
 
     <Border Padding="10" 
-            CornerRadius="10" Background="White">
+            CornerRadius="0,0,10,10" Background="White">
         <Grid Background="White">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.7*"/>
@@ -21,23 +21,14 @@
             <Grid Grid.Row="0">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="{Binding ClientName}" FontSize="30">
-                        
+
                     </TextBlock>
-                </StackPanel>
-                <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top">
-                    <Button Background="Transparent" BorderThickness="0">
-                        <Image Source="/Images/close.png" Width="40">
-                            <Image.InputBindings>
-                                <MouseBinding Gesture="LeftClick" Command="{Binding CloseCommand}"></MouseBinding>
-                            </Image.InputBindings>
-                        </Image>
-                    </Button>
                 </StackPanel>
             </Grid>
 
             <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="0.5">
                 <Grid Grid.Row="1">
-                    <StackPanel CanVerticallyScroll="True">
+                    <StackPanel Name="messagePanel" CanVerticallyScroll="True">
 
                     </StackPanel>
                 </Grid>
@@ -55,7 +46,7 @@
 
                     <TextBlock Margin="15,0,8,0" Text="Message Section" VerticalAlignment="Center" FontSize="9"
                                FontWeight="Bold"></TextBlock>
-                    <TextBox  FontSize="16"  Grid.Column="1" Margin="20" MaxHeight="45" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
+                    <TextBox  FontSize="14"  Grid.Column="1" Margin="20" MaxHeight="45" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
                           Text="{Binding ClientMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <TextBox.Resources>
                             <Style TargetType="Border">
@@ -65,7 +56,8 @@
                     </TextBox>
 
                     <StackPanel Grid.Column="2" VerticalAlignment="Center" Orientation="Horizontal">
-                        <Button Margin="0" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent" BorderThickness="0" Grid.Column="2">
+                        <Button Margin="0" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent" BorderThickness="0" Grid.Column="2"
+                                Command="{Binding SendCommand}">
                             <Image Width="25" RenderOptions.BitmapScalingMode="HighQuality" Source="/Images/share.png"></Image>
                         </Button>
 

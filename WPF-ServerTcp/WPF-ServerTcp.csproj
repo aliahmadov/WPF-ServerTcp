@@ -58,6 +58,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewModels\MessageViewModel.cs" />
     <Compile Include="ViewModels\MessageWindowViewModel.cs" />
     <Compile Include="Views\MessageUC.xaml.cs">
       <DependentUpon>MessageUC.xaml</DependentUpon>

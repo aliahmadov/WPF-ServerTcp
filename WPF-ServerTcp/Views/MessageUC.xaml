@@ -15,6 +15,6 @@
                 </LinearGradientBrush.GradientStops>
             </LinearGradientBrush>
         </Border.Background>
-        <TextBlock Foreground="White" TextWrapping="Wrap"></TextBlock>
+        <TextBlock Foreground="White" TextWrapping="Wrap" Text="{Binding ClientMessage}"></TextBlock>
     </Border>
 </UserControl>
