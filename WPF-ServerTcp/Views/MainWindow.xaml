@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WPF_ServerTcp"
+        xmlns:local="clr-namespace:WPF_ServerTcp" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
@@ -16,7 +16,8 @@
 
             <StackPanel>
 
-                <ListBox Name="listBox" FontSize="25" ItemsSource="{Binding TcpClients}">
+                <ListBox Name="listBox" FontSize="25" ItemsSource="{Binding TcpClients}"
+                         SelectedItem="{Binding SelectedClient, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid >
@@ -30,6 +31,13 @@
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDoubleClick" >
+                            <i:InvokeCommandAction Command="{Binding SelectedClientCommand}">
+
+                            </i:InvokeCommandAction>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                 </ListBox>
 
                 <TextBlock Margin="5,10,0,0" Text="Offline Users" FontSize="30" FontWeight="DemiBold">

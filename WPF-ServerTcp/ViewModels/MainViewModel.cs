@@ -9,8 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using WPF_ServerTcp.Commands;
 using WPF_ServerTcp.Models;
 using WPF_ServerTcp.Services;
+using WPF_ServerTcp.Views;
 
 namespace WPF_ServerTcp.ViewModels
 {
@@ -35,12 +37,10 @@ namespace WPF_ServerTcp.ViewModels
         }
 
 
-        public TcpClient SelectedClient { get; set; }
+        public ClientItem SelectedClient { get; set; }
 
         public TcpListener TcpListener { get; set; }
 
-
-        DispatcherTimer acceptDispatcher;
 
         DispatcherTimer checkDispatcher;
 
@@ -49,40 +49,50 @@ namespace WPF_ServerTcp.ViewModels
         public BinaryWriter BinaryWriter { get; set; }
 
 
+        public RelayCommand SelectedClientCommand { get; set; }
 
-
-
+        public bool IsFirstStream { get; set; }
         public async void GetClients()
         {
             await Task.Run(async () =>
             {
                 var client = await TcpListener.AcceptTcpClientAsync();
+                IsFirstStream = true;
                 var clientItem = new ClientItem();
                 while (true)
                 {
-
-                    var stream = client.GetStream();
-                    string name;
-
                     try
                     {
+                        var stream = client.GetStream();
+                        string name = "";
                         BinaryReader = new BinaryReader(stream);
-                        name = BinaryReader.ReadString();
-                        App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
-                        {
-                            clientItem = new ClientItem { Client = client, Name = name };
-                            if(OfflineTcpClients.Any(c=>c.Name==clientItem.Name))
-                            {
-                                var cI = OfflineTcpClients.First(c => c.Name == clientItem.Name);
-                                OfflineTcpClients.Remove(cI);
 
-                            }
-                            TcpClients.Add(clientItem);
-                        });
+                        if (IsFirstStream)
+                        {
+                            IsFirstStream = !IsFirstStream;
+                            name = BinaryReader.ReadString();
+                            App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                            {
+                                clientItem.Name = name;
+                                clientItem.Client = client;
+                                if (OfflineTcpClients.Any(c => c.Name == clientItem.Name))
+                                {
+                                    var cI = OfflineTcpClients.First(c => c.Name == clientItem.Name);
+                                    OfflineTcpClients.Remove(cI);
+
+                                }
+                                TcpClients.Add(clientItem);
+                            });
+                        }
+                        else
+                        {
+                            var str = BinaryReader.ReadString();
+                        }
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show($"{clientItem.Name} disconnected");
+                        IsFirstStream = true;
                         break;
                     }
 
@@ -92,12 +102,7 @@ namespace WPF_ServerTcp.ViewModels
         }
         public MainViewModel()
         {
-            //acceptDispatcher = new DispatcherTimer();
-            //acceptDispatcher.Interval = TimeSpan.FromSeconds(1);
-            //acceptDispatcher.Tick += AcceptDispatcher_Tick;
-            //acceptDispatcher.Start();
-
-
+            IsFirstStream = true;
             checkDispatcher = new DispatcherTimer();
             checkDispatcher.Interval = TimeSpan.FromSeconds(1);
             checkDispatcher.Tick += CheckDispatcher_Tick;
@@ -115,6 +120,19 @@ namespace WPF_ServerTcp.ViewModels
             MessageBox.Show($"Listening on {TcpListener.LocalEndpoint}");
 
             GetClients();
+
+            SelectedClientCommand = new RelayCommand(c =>
+            {
+                var view = new MessageWindow();
+                var viewModel = new MessageWindowViewModel();
+                viewModel.ClientName = SelectedClient.Name;
+                view = viewModel.MyMessageWindow;
+                view.DataContext = viewModel;
+
+                view.ShowDialog();
+
+
+            });
 
         }
 

@@ -12,5 +12,6 @@ namespace WPF_ServerTcp.Models
         public TcpClient Client { get; set; }
 
         public string Name { get; set; }
+
     }
 }
