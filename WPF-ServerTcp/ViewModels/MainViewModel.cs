@@ -82,11 +82,13 @@ namespace WPF_ServerTcp.ViewModels
 
                                 }
                                 TcpClients.Add(clientItem);
+                                
                             });
+                            break;
                         }
                         else
                         {
-                            var str = BinaryReader.ReadString();
+                            break;
                         }
                     }
                     catch (Exception ex)

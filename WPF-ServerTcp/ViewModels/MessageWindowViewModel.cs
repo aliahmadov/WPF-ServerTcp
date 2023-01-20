@@ -53,33 +53,46 @@ namespace WPF_ServerTcp.ViewModels
         {
             await Task.Run(() =>
             {
-                App.Current.Dispatcher.Invoke((Action)delegate
+                App.Current.Dispatcher.Invoke((Action)async delegate
                 {
                     var view = new MessageUC();
                     var viewModel = new MessageViewModel();
                     view.DataContext = viewModel;
 
-                    var stream = ClientItem.Client.GetStream();
-                    BR = new BinaryReader(stream);
-
-
-
-
-
-                    viewModel.ClientMessage = BR.ReadString();
-
-                    if (viewModel.ClientMessage != null)
+                    try
                     {
-                        App.Current.Dispatcher.Invoke((Action)async delegate
+
+                        var stream = ClientItem.Client.GetStream();
+                        BR = new BinaryReader(stream);
+
+                        await Task.Run(() =>
                         {
-                            view.HorizontalAlignment = HorizontalAlignment.Left;
-                            MessagePanel.Children.Add(view);
+                            try
+                            {
+
+                                viewModel.ClientMessage = BR.ReadString();
+
+                                App.Current.Dispatcher.Invoke((Action)delegate
+                                {
+                                    view.HorizontalAlignment = HorizontalAlignment.Left;
+                                    MessagePanel.Children.Add(view);
+                                });
+                            }
+                            catch (Exception)
+                            {
+
+                                throw;
+                            }
                         });
+
 
                     }
 
+                    catch (Exception)
+                    {
 
-
+                        throw;
+                    }
 
                 });
             });
