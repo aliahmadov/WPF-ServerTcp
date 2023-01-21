@@ -51,47 +51,52 @@ namespace WPF_ServerTcp.ViewModels
         public StackPanel MessagePanel { get; set; }
         public async void ReceiveMessage()
         {
+            messageReceiverTimer.Stop();
             await Task.Run(() =>
             {
                 App.Current.Dispatcher.Invoke((Action)async delegate
                 {
-                    var view = new MessageUC();
-                    var viewModel = new MessageViewModel();
-                    view.DataContext = viewModel;
 
                     try
                     {
 
                         var stream = ClientItem.Client.GetStream();
                         BR = new BinaryReader(stream);
-
-                        await Task.Run(() =>
+                        App.Current.Dispatcher.Invoke((Action)async delegate
                         {
-                            try
+                            while (true)
                             {
+                                var view = new MessageUC();
+                                var viewModel = new MessageViewModel();
+                                view.DataContext = viewModel;
 
-                                viewModel.ClientMessage = BR.ReadString();
-
-                                App.Current.Dispatcher.Invoke((Action)delegate
+                                await Task.Run(() =>
                                 {
-                                    view.HorizontalAlignment = HorizontalAlignment.Left;
-                                    MessagePanel.Children.Add(view);
-                                });
-                            }
-                            catch (Exception)
-                            {
+                                    try
+                                    {
 
-                               
+                                        viewModel.ClientMessage = BR.ReadString();
+
+                                        App.Current.Dispatcher.Invoke((Action)delegate
+                                        {
+                                            view.HorizontalAlignment = HorizontalAlignment.Left;
+                                            MessagePanel.Children.Add(view);
+                                        });
+                                    }
+                                    catch (Exception)
+                                    {
+
+
+                                    }
+                                });
                             }
                         });
 
-
                     }
-
                     catch (Exception)
                     {
 
-                      
+
                     }
 
                 });
@@ -101,7 +106,7 @@ namespace WPF_ServerTcp.ViewModels
         public MessageWindowViewModel()
         {
             messageReceiverTimer = new DispatcherTimer();
-            messageReceiverTimer.Interval = TimeSpan.FromSeconds(7);
+            messageReceiverTimer.Interval = TimeSpan.FromSeconds(3);
             messageReceiverTimer.Tick += MessageReceiverTimer_Tick;
             messageReceiverTimer.Start();
 
@@ -121,6 +126,7 @@ namespace WPF_ServerTcp.ViewModels
                 MessagePanel.Children.Add(view);
                 ClientMessage = "";
             });
+            
         }
 
         private void MessageReceiverTimer_Tick(object sender, EventArgs e)

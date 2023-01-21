@@ -69,8 +69,8 @@ namespace WPF_ServerTcp.ViewModels
 
                         if (IsFirstStream)
                         {
-                            IsFirstStream = !IsFirstStream;
                             name = BinaryReader.ReadString();
+                            IsFirstStream = !IsFirstStream;
                             App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
                             {
                                 clientItem.Name = name;
@@ -82,14 +82,11 @@ namespace WPF_ServerTcp.ViewModels
 
                                 }
                                 TcpClients.Add(clientItem);
-                                
+
                             });
-                            break;
+
                         }
-                        else
-                        {
-                            break;
-                        }
+                        break;
                     }
                     catch (Exception ex)
                     {
@@ -102,13 +99,21 @@ namespace WPF_ServerTcp.ViewModels
 
             });
         }
+
+        public DispatcherTimer timer { get; set; }
         public MainViewModel()
         {
             IsFirstStream = true;
             checkDispatcher = new DispatcherTimer();
-            checkDispatcher.Interval = TimeSpan.FromSeconds(1);
+            checkDispatcher.Interval = TimeSpan.FromSeconds(3);
             checkDispatcher.Tick += CheckDispatcher_Tick;
             checkDispatcher.Start();
+
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(10);
+            timer.Tick += Timer_Tick; ;
+            //  timer.Start();
+
 
             OfflineTcpClients = new ObservableCollection<ClientItem>();
             TcpClients = new ObservableCollection<ClientItem>();
@@ -121,7 +126,7 @@ namespace WPF_ServerTcp.ViewModels
             TcpListener.Start();
             MessageBox.Show($"Listening on {TcpListener.LocalEndpoint}");
 
-            GetClients();
+
 
             SelectedClientCommand = new RelayCommand(c =>
             {
@@ -138,26 +143,29 @@ namespace WPF_ServerTcp.ViewModels
 
         }
 
-
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            //for (int i = 0; i < TcpClients.Count; i++)
+            //{
+            //    var item = TcpClients[i];
+            //    if (!item.Client.Connected)
+            //    {
+            //        TcpClients.Remove(item);
+            //        OfflineTcpClients.Add(item);
+            //    }
+            //    else
+            //    {
+            //        if (OfflineTcpClients != null)
+            //            if (OfflineTcpClients.Count != 0)
+            //                OfflineTcpClients.Remove(item);
+            //    }
+            //}
+        }
 
         private void CheckDispatcher_Tick(object sender, EventArgs e)
         {
             GetClients();
-            for (int i = 0; i < TcpClients.Count; i++)
-            {
-                var item = TcpClients[i];
-                if (!item.Client.Connected)
-                {
-                    TcpClients.Remove(item);
-                    OfflineTcpClients.Add(item);
-                }
-                else
-                {
-                    if (OfflineTcpClients != null)
-                        if (OfflineTcpClients.Count != 0)
-                            OfflineTcpClients.Remove(item);
-                }
-            }
+
         }
     }
 }
