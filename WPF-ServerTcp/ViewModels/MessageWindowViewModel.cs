@@ -81,7 +81,7 @@ namespace WPF_ServerTcp.ViewModels
                             catch (Exception)
                             {
 
-                                throw;
+                               
                             }
                         });
 
@@ -91,7 +91,7 @@ namespace WPF_ServerTcp.ViewModels
                     catch (Exception)
                     {
 
-                        throw;
+                      
                     }
 
                 });
