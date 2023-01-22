@@ -52,6 +52,25 @@ namespace WPF_ServerTcp.ViewModels
         public RelayCommand SelectedClientCommand { get; set; }
 
         public bool IsFirstStream { get; set; }
+
+
+        public async void CheckIfOnline(ClientItem clientItem)
+        {
+            await Task.Run(() =>
+            {
+                try
+                {
+                    var stream = clientItem.Client.GetStream();
+                    var bw = new BinaryReader(stream);
+                    var a = bw.ReadString();
+                }
+                catch (Exception)
+                {
+
+                    MessageBox.Show($"{clientItem.Name} disconnected");
+                }
+            });
+        }
         public async void GetClients()
         {
             await Task.Run(async () =>
@@ -82,7 +101,6 @@ namespace WPF_ServerTcp.ViewModels
 
                                 }
                                 TcpClients.Add(clientItem);
-
                             });
 
                         }
@@ -97,6 +115,7 @@ namespace WPF_ServerTcp.ViewModels
 
                 }
 
+                CheckIfOnline(clientItem);
             });
         }
 
@@ -105,14 +124,14 @@ namespace WPF_ServerTcp.ViewModels
         {
             IsFirstStream = true;
             checkDispatcher = new DispatcherTimer();
-            checkDispatcher.Interval = TimeSpan.FromSeconds(3);
+            checkDispatcher.Interval = TimeSpan.FromSeconds(2);
             checkDispatcher.Tick += CheckDispatcher_Tick;
             checkDispatcher.Start();
 
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(10);
+            timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += Timer_Tick; ;
-            //  timer.Start();
+            timer.Start();
 
 
             OfflineTcpClients = new ObservableCollection<ClientItem>();
@@ -145,27 +164,29 @@ namespace WPF_ServerTcp.ViewModels
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            //for (int i = 0; i < TcpClients.Count; i++)
-            //{
-            //    var item = TcpClients[i];
-            //    if (!item.Client.Connected)
-            //    {
-            //        TcpClients.Remove(item);
-            //        OfflineTcpClients.Add(item);
-            //    }
-            //    else
-            //    {
-            //        if (OfflineTcpClients != null)
-            //            if (OfflineTcpClients.Count != 0)
-            //                OfflineTcpClients.Remove(item);
-            //    }
-            //}
+            for (int i = 0; i < TcpClients.Count; i++)
+            {
+                var item = TcpClients[i];
+                var hasExistOn = TcpClients.Any(c => c == item);
+                var hasExistOf = OfflineTcpClients.Any(c => c == item);
+                if (!item.Client.Connected)
+                {
+                    if (hasExistOn)
+                        TcpClients.Remove(item);
+                    if (!hasExistOf)
+                        OfflineTcpClients.Add(item);
+                }
+                else
+                {
+                    if (hasExistOf)
+                        OfflineTcpClients.Remove(item);
+                }
+            }
         }
 
         private void CheckDispatcher_Tick(object sender, EventArgs e)
         {
             GetClients();
-
         }
     }
 }

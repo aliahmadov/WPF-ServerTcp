@@ -54,7 +54,7 @@ namespace WPF_ServerTcp.ViewModels
             messageReceiverTimer.Stop();
             await Task.Run(() =>
             {
-                App.Current.Dispatcher.Invoke((Action)async delegate
+                App.Current.Dispatcher.Invoke((Action)delegate
                 {
 
                     try
@@ -106,7 +106,7 @@ namespace WPF_ServerTcp.ViewModels
         public MessageWindowViewModel()
         {
             messageReceiverTimer = new DispatcherTimer();
-            messageReceiverTimer.Interval = TimeSpan.FromSeconds(3);
+            messageReceiverTimer.Interval = TimeSpan.FromSeconds(5);
             messageReceiverTimer.Tick += MessageReceiverTimer_Tick;
             messageReceiverTimer.Start();
 
@@ -126,7 +126,7 @@ namespace WPF_ServerTcp.ViewModels
                 MessagePanel.Children.Add(view);
                 ClientMessage = "";
             });
-            
+
         }
 
         private void MessageReceiverTimer_Tick(object sender, EventArgs e)
