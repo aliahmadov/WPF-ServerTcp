@@ -106,7 +106,7 @@ namespace WPF_ServerTcp.ViewModels
         public MessageWindowViewModel()
         {
             messageReceiverTimer = new DispatcherTimer();
-            messageReceiverTimer.Interval = TimeSpan.FromSeconds(5);
+            messageReceiverTimer.Interval = TimeSpan.FromSeconds(3);
             messageReceiverTimer.Tick += MessageReceiverTimer_Tick;
             messageReceiverTimer.Start();
 

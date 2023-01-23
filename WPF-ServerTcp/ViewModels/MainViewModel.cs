@@ -61,8 +61,7 @@ namespace WPF_ServerTcp.ViewModels
                 try
                 {
                     var stream = clientItem.Client.GetStream();
-                    var bw = new BinaryReader(stream);
-                    var a = bw.ReadString();
+                    var a = BinaryReader.ReadString();
                 }
                 catch (Exception)
                 {
