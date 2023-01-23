@@ -34,11 +34,7 @@ namespace WPF_ServerTcp.ViewModels
             set { clientMessage = value; OnPropertyChanged(); }
         }
 
-
         public RelayCommand SendCommand { get; set; }
-
-        public RelayCommand CloseCommand { get; set; }
-
 
         public ClientItem ClientItem { get; set; }
 
@@ -46,69 +42,11 @@ namespace WPF_ServerTcp.ViewModels
 
         public BinaryWriter BW { get; set; }
 
-        public DispatcherTimer messageReceiverTimer { get; set; }
-
         public StackPanel MessagePanel { get; set; }
-        public async void ReceiveMessage()
-        {
-            messageReceiverTimer.Stop();
-            await Task.Run(() =>
-            {
-                App.Current.Dispatcher.Invoke((Action)delegate
-                {
-
-                    try
-                    {
-
-                        var stream = ClientItem.Client.GetStream();
-                        BR = new BinaryReader(stream);
-                        App.Current.Dispatcher.Invoke((Action)async delegate
-                        {
-                            while (true)
-                            {
-                                var view = new MessageUC();
-                                var viewModel = new MessageViewModel();
-                                view.DataContext = viewModel;
-
-                                await Task.Run(() =>
-                                {
-                                    try
-                                    {
-
-                                        viewModel.ClientMessage = BR.ReadString();
-
-                                        App.Current.Dispatcher.Invoke((Action)delegate
-                                        {
-                                            view.HorizontalAlignment = HorizontalAlignment.Left;
-                                            MessagePanel.Children.Add(view);
-                                        });
-                                    }
-                                    catch (Exception)
-                                    {
-
-
-                                    }
-                                });
-                            }
-                        });
-
-                    }
-                    catch (Exception)
-                    {
-
-
-                    }
-
-                });
-            });
-        }
-
+       
         public MessageWindowViewModel()
         {
-            messageReceiverTimer = new DispatcherTimer();
-            messageReceiverTimer.Interval = TimeSpan.FromSeconds(3);
-            messageReceiverTimer.Tick += MessageReceiverTimer_Tick;
-            messageReceiverTimer.Start();
+
 
             SendCommand = new RelayCommand(c =>
             {
@@ -129,9 +67,6 @@ namespace WPF_ServerTcp.ViewModels
 
         }
 
-        private void MessageReceiverTimer_Tick(object sender, EventArgs e)
-        {
-            ReceiveMessage();
-        }
+     
     }
 }

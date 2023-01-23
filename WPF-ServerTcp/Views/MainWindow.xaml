@@ -8,6 +8,12 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <StackPanel>
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+                <TextBlock Text="Double click on username in the list to open message window" Margin="5,5,0,10"
+                           FontSize="16" Foreground="OrangeRed" FontWeight="Bold">
+                    
+                </TextBlock>
+            </StackPanel>
             <StackPanel Margin="5,10,0,0" VerticalAlignment="Center" HorizontalAlignment="Left">
                 <TextBlock Text="Online Users" FontSize="30" FontWeight="DemiBold">
 

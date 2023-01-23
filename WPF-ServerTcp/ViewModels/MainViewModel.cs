@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Threading;
 using WPF_ServerTcp.Commands;
 using WPF_ServerTcp.Models;
@@ -51,23 +52,54 @@ namespace WPF_ServerTcp.ViewModels
 
         public RelayCommand SelectedClientCommand { get; set; }
 
+        public StackPanel MessagePanel { get; set; }
         public bool IsFirstStream { get; set; }
 
 
-        public async void CheckIfOnline(ClientItem clientItem)
+        public async void CheckIfOnlineAndReceiveMessage(ClientItem clientItem)
         {
             await Task.Run(() =>
             {
-                try
-                {
-                    var stream = clientItem.Client.GetStream();
-                    var a = BinaryReader.ReadString();
-                }
-                catch (Exception)
+                bool hasConnected = true;
+                App.Current.Dispatcher.Invoke((Action)delegate
                 {
 
-                    MessageBox.Show($"{clientItem.Name} disconnected");
-                }
+                    var stream = clientItem.Client.GetStream();
+                    //BinaryReader = new BinaryReader(stream);
+                    var BR = new BinaryReader(stream);
+                    App.Current.Dispatcher.Invoke((Action)async delegate
+                    {
+                        while (true)
+                        {
+                            var view = new MessageUC();
+                            var viewModel = new MessageViewModel();
+                            view.DataContext = viewModel;
+
+                            await Task.Run(() =>
+                            {
+                                try
+                                {
+
+                                    viewModel.ClientMessage = BR.ReadString();
+
+                                    App.Current.Dispatcher.Invoke((Action)delegate
+                                    {
+                                        view.HorizontalAlignment = HorizontalAlignment.Left;
+                                        MessagePanel.Children.Add(view);
+                                    });
+                                }
+                                catch (Exception)
+                                {
+                                    MessageBox.Show($"{clientItem.Name} disconnected");
+                                    hasConnected = false;
+                                }
+                            });
+                            if (!hasConnected) break;
+                        }
+                    });
+
+
+                });
             });
         }
         public async void GetClients()
@@ -114,7 +146,7 @@ namespace WPF_ServerTcp.ViewModels
 
                 }
 
-                CheckIfOnline(clientItem);
+                CheckIfOnlineAndReceiveMessage(clientItem);
             });
         }
 
@@ -154,6 +186,9 @@ namespace WPF_ServerTcp.ViewModels
                 viewModel.ClientItem = SelectedClient;
                 viewModel.MessagePanel = view.messagePanel;
                 view.DataContext = viewModel;
+
+                MessagePanel = view.messagePanel;
+
                 view.ShowDialog();
 
 
